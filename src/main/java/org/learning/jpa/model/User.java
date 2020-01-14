@@ -4,6 +4,12 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="user")
+@NamedQueries({
+        @NamedQuery(name = "User.findByName",
+                query = "select u from User u where u.name = :name"),
+        @NamedQuery(name = "User.findAll",
+                query = "select u from User u")
+})
 public class User {
 
     @Id
@@ -16,9 +22,15 @@ public class User {
 
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "user_profile_id")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile profile;
+
+    public User() {
+    }
+
+    public User(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;
@@ -67,7 +79,11 @@ public class User {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", profile=" + profile +
                 '}';
+    }
+
+    public void addProfile(UserProfile userProfile) {
+        setProfile(userProfile);
+        this.profile.setUser(this);
     }
 }

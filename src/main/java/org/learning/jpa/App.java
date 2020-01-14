@@ -3,8 +3,10 @@ package org.learning.jpa;
 import org.learning.jpa.model.Author;
 import org.learning.jpa.model.Book;
 import org.learning.jpa.model.User;
+import org.learning.jpa.model.UserProfile;
 import org.learning.jpa.repository.AuthorRepository;
 import org.learning.jpa.repository.BookRepository;
+import org.learning.jpa.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +24,36 @@ public class App {
         // Create our Repositories
         BookRepository bookRepository = new BookRepository(entityManager);
         AuthorRepository authorRepository = new AuthorRepository(entityManager);
+        UserRepository userRepository = new UserRepository(entityManager);
+
+        // Create an User and persisting to the db.
+        User user = new User("Junaid");
+        user.setEmail("junaidnumcs@gmail.com");
+        user.setPassword("root");
+        user.addProfile(new UserProfile(25,"M","Green"));
+
+        Optional<User> savedUser = userRepository.save(user);
+        savedUser.ifPresent(System.out::println);
+        System.out.println("*************Find By ID*************");
+        Optional<User> retrievedUser = userRepository.findById(3);
+        retrievedUser.ifPresent(System.out::println);
+        System.out.println("*************Find By Name************");
+        Optional<User> retrievedUser1 = userRepository.findByName("Naveed");
+        retrievedUser1.ifPresent(System.out::println);
+        System.out.println(retrievedUser1.get().getProfile());
+        System.out.println("************Find All**************");
+        List<User> users = userRepository.findAll();
+        users.forEach(System.out::println);
+        System.out.println("***********Find All Named Query**************");
+        List<User> users1 = userRepository.findAllNamedQuery();
+        users1.forEach(System.out::println);
+        System.out.println("**************Find By Name Named Query**************");
+        Optional<User> retrievedUser2 = userRepository.findByNameNamedQuery("Salman");
+        retrievedUser2.ifPresent(System.out::println);
+
+
+
+
         // Create an author and add 3 books to his list of books
 
         Author author = new Author("Author 1");
@@ -29,6 +61,7 @@ public class App {
         author.addBook(new Book("Book 2","1322-987987-9892"));
         author.addBook(new Book("Book 3","1322-987987-9893"));
         Optional<Author> savedAuthor = authorRepository.save(author);
+        savedAuthor.ifPresent(System.out::println);
         System.out.println("Saved Author : " + savedAuthor.get());
         // Find all Authors
         List<Author> authors = authorRepository.findAll();

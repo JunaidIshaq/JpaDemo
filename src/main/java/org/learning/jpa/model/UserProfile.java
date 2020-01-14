@@ -17,8 +17,18 @@ public class UserProfile {
 
     private String favoriteColor;
 
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+    public UserProfile() {
+    }
+
+    public UserProfile(Integer age, String gender, String favoriteColor) {
+        this.setAge(age);
+        this.setGender(gender);
+        this.setFavoriteColor(favoriteColor);
+    }
 
     public Integer getId() {
         return id;
